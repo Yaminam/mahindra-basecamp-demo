@@ -127,7 +127,7 @@ export function MaskLines({ lines, className = "", delay = 0, inView = false }) 
   return (
     <motion.span className={className} {...parent}>
       {lines.map((l, i) => (
-        <span key={i} className="block overflow-hidden pb-[0.06em]">
+        <span key={i} className="-mb-[0.1em] block overflow-hidden pb-[0.16em]">
           <motion.span className="block" variants={{ hide: { y: "105%" }, show: { y: 0, transition: { duration: 1.1, delay: delay + i * 0.1, ease: EXPO } } }}>{l}</motion.span>
         </span>
       ))}

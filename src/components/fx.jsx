@@ -60,7 +60,7 @@ export function Rise({ text, className = "", delay = 0, stagger = 0.025 }) {
   return (
     <span className={className} aria-label={text}>
       {words.map((w, wi) => (
-        <span key={wi} className="inline-block overflow-hidden pb-[0.08em] align-bottom" aria-hidden>
+        <span key={wi} className="-mb-[0.08em] inline-block overflow-hidden pb-[0.16em] align-bottom" aria-hidden>
           {[...w].map((ch) => {
             const d = delay + i++ * stagger;
             return (

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { WhatsappLogo, CheckCircle, Lock, Seal } from "@phosphor-icons/react";
 import { useStore } from "../store";
 import { DROP_AT, img } from "../data";
-import { Photo, Reveal, Btn, Countdown } from "../components/ui";
+import { Photo, Reveal, Btn, Countdown, useCountdown } from "../components/ui";
 import { Tilt } from "../components/fx";
 import { MaskLines, RevealImage } from "../components/premium";
 
@@ -26,75 +26,86 @@ export default function Drops() {
   const [vin4, setVin4] = useState("");
   const on = notify.includes("heritage");
   const valid = /^[6-9]\d{9}$/.test(phone);
+  const t = useCountdown(DROP_AT);
 
   return (
     <div>
       <section className="relative mx-3 mt-3 overflow-hidden rounded-[40px] bg-[#0b0c0e] text-white sm:mx-5">
-        <div className="absolute -left-40 top-1/4 h-[560px] w-[560px] rounded-full bg-red/30 blur-[140px]" />
-        <div className="absolute -right-40 bottom-0 h-[420px] w-[420px] rounded-full bg-red/15 blur-[120px]" />
-        {/* giant outlined year */}
-        <motion.p initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="pointer-events-none absolute -bottom-[0.12em] right-[-0.04em] select-none text-[34vw] font-semibold leading-none tracking-[-0.08em] text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,.09)]">1947</motion.p>
+        <div className="absolute left-1/2 top-1/2 h-[640px] w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red/25 blur-[140px]" />
+        {/* drifting giant wordmark */}
+        <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 overflow-hidden" aria-hidden>
+          <div className="flex w-max animate-[marquee_60s_linear_infinite] gap-16 motion-reduce:animate-none">
+            {[0, 1].map((k) => (
+              <span key={k} className="whitespace-nowrap text-[22vw] font-semibold leading-none tracking-[-0.07em] text-transparent [-webkit-text-stroke:1.5px_rgba(255,255,255,.08)]">HERITAGE 1947 HERITAGE 1947</span>
+            ))}
+          </div>
+        </div>
 
-        <div className="relative mx-auto grid min-h-[90dvh] max-w-[1600px] items-center gap-16 px-6 py-16 sm:px-12 lg:grid-cols-[1.1fr_1fr]">
-          <div>
+        <div className="relative mx-auto grid min-h-[calc(100dvh-96px)] max-w-[1700px] items-center gap-10 px-6 py-12 sm:px-12 lg:grid-cols-[1fr_auto_1fr]">
+          {/* left: story */}
+          <div className="max-w-md">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] backdrop-blur">
               <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-red" /></span>
-              Next drop, live countdown
+              Drop 07
             </motion.div>
-            <h1 className="display mt-8 text-[14vw] leading-[0.86] sm:text-[7.5rem] xl:text-[8.5rem]"><MaskLines lines={["Heritage", "Field Jacket."]} delay={0.4} /></h1>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="mt-6 max-w-md text-lg text-white/60">Waxed cotton, archive detailing and an inner label numbered out of 1,947. Owners can add the last four digits of their VIN.</motion.p>
-
-            <div className="mt-10 grid max-w-lg grid-cols-4 gap-2 [&_.display]:!text-5xl sm:[&_.display]:!text-6xl [&_.text-mute]:!text-white/45 [&>div>div]:w-full">
-              <div className="col-span-4 [&>div]:grid [&>div]:grid-cols-4 [&>div]:gap-2 [&>div>div]:rounded-2xl [&>div>div]:border [&>div>div]:border-white/10 [&>div>div]:bg-white/[0.04] [&>div>div]:py-4 [&>div>div]:backdrop-blur">
-                <Countdown target={DROP_AT} big />
-              </div>
-            </div>
-
-            <div className="mt-8 max-w-lg">
-              <div className="flex justify-between text-sm text-white/55"><span>Pre-registered</span><span className="tabular-nums">1,312 of 1,947</span></div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
-                <motion.div className="h-full rounded-full bg-red" initial={{ width: 0 }} animate={{ width: "67%" }} transition={{ delay: 1.1, duration: 1.6, ease: [0.16, 1, 0.3, 1] }} />
-              </div>
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-5">
-              {on ? (
-                <span className="flex items-center gap-2 rounded-full bg-fit/20 px-5 py-3.5 text-sm text-[#5fe0a0]"><CheckCircle weight="fill" size={18} /> You will get a WhatsApp alert</span>
-              ) : (
-                <Btn onClick={() => setOpen(true)} className="py-4"><WhatsappLogo size={18} weight="fill" /> Notify me on WhatsApp</Btn>
-              )}
-              <span className="flex items-center gap-2 text-sm text-white/55"><Lock size={16} /> {member === "Summit" ? "Your early access opens 24 hours before" : "Pass members get in 24 hours early"}</span>
-            </div>
+            <h1 className="display mt-6 text-6xl leading-[0.88] xl:text-[5.5rem]"><MaskLines lines={["Heritage", "Field Jacket."]} delay={0.4} /></h1>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="mt-6 text-lg text-white/60">Waxed cotton and archive detailing, with an inner label numbered out of 1,947. Owners can stitch in their VIN.</motion.p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }} className="mt-8 flex items-baseline gap-3">
+              <span className="text-4xl font-semibold tracking-tight tabular-nums">₹9,999</span>
+              <span className="text-sm text-white/45">1 per customer</span>
+            </motion.div>
           </div>
 
-          {/* fanned card stack */}
-          <div className="group/stack relative mx-auto hidden h-[640px] w-full max-w-[520px] lg:block">
+          {/* centre: product */}
+          <motion.div initial={{ opacity: 0, y: 60, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }} className="relative mx-auto w-[min(78vw,400px)]">
+            <Tilt holo max={14} className="rounded-[30px]">
+              <div className="relative overflow-hidden rounded-[30px] shadow-[0_60px_140px_-30px_rgba(221,5,43,.6)]">
+                <Photo src="jacket.jpg" alt="Heritage Field Jacket" eager className="aspect-[4/5]" />
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/85 to-transparent p-5">
+                  <p className="font-mono text-xs text-white/75">No. 0001 / 1947</p>
+                  <p className="text-xs text-white/75">{vin4 ? `VIN ending ${vin4}` : "Your VIN here"}</p>
+                </div>
+              </div>
+            </Tilt>
             {[
-              { src: "heritage.jpg", label: "Archive, 1947", r: -12, x: -90, y: 30 },
-              { src: "merch/keychain.jpg", label: "Brass label, numbered", r: 10, x: 90, y: 40 },
-            ].map((c, i) => (
-              <motion.div key={c.src} initial={{ opacity: 0, rotate: 0, x: 0, y: 40 }} animate={{ opacity: 1, rotate: c.r, x: c.x, y: c.y }} transition={{ delay: 0.6 + i * 0.12, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute left-1/2 top-0 h-[520px] w-[360px] -translate-x-1/2 overflow-hidden rounded-[28px] border border-white/10 shadow-2xl transition-transform duration-700 group-hover/stack:scale-[1.03]">
-                <img src={img(c.src)} alt="" className="h-full w-full object-cover opacity-70" />
-                <p className="absolute bottom-5 left-5 text-sm text-white/80">{c.label}</p>
+              ["Waxed cotton", "-left-40 top-[14%]", "left"],
+              ["Brass hardware", "-left-36 bottom-[12%]", "left"],
+            ].map(([t, pos, side], i) => (
+              <motion.div key={t} initial={{ opacity: 0, x: side === "left" ? -20 : 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2 + i * 0.15 }}
+                className={`absolute hidden items-center gap-3 xl:flex ${pos} ${side === "right" ? "flex-row-reverse" : ""}`}>
+                <span className="whitespace-nowrap rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs backdrop-blur">{t}</span>
+                <span className="h-px w-14 bg-white/30" />
+                <span className="h-1.5 w-1.5 rounded-full bg-red" />
               </motion.div>
             ))}
-            <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 1.1, ease: [0.16, 1, 0.3, 1] }} className="absolute left-1/2 top-6 w-[380px] -translate-x-1/2">
-              <Tilt holo max={12} className="rounded-[28px]">
-                <div className="relative overflow-hidden rounded-[28px] shadow-[0_60px_120px_-30px_rgba(221,5,43,.55)]">
-                  <Photo src="jacket.jpg" alt="Heritage Field Jacket" eager className="h-[560px]" />
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/90 to-transparent p-6">
-                    <div>
-                      <p className="font-mono text-xs text-white/70">No. 0001 / 1947</p>
-                      <p className="mt-1 text-sm text-white/80">{vin4 ? `VIN ending ${vin4}` : "Your VIN on the label"}</p>
-                    </div>
-                    <span className="text-2xl font-semibold tabular-nums">₹9,999</span>
-                  </div>
+          </motion.div>
+
+          {/* right: countdown + CTA */}
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="w-full max-w-sm justify-self-end">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">Drops in</p>
+            <div className="mt-4 divide-y divide-white/10 border-y border-white/10">
+              {[["Days", t.d], ["Hours", t.h], ["Minutes", t.m], ["Seconds", t.s]].map(([l, v]) => (
+                <div key={l} className="flex items-baseline justify-between py-2.5">
+                  <span className="text-sm text-white/45">{l}</span>
+                  <span className="text-4xl font-semibold tabular-nums tracking-tight">{String(v).padStart(2, "0")}</span>
                 </div>
-              </Tilt>
-            </motion.div>
-          </div>
+              ))}
+            </div>
+            <div className="mt-6">
+              <div className="flex justify-between text-xs text-white/50"><span>Pre-registered</span><span className="tabular-nums">1,312 / 1,947</span></div>
+              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
+                <motion.div className="h-full rounded-full bg-red" initial={{ width: 0 }} animate={{ width: "67%" }} transition={{ delay: 1.3, duration: 1.6, ease: [0.16, 1, 0.3, 1] }} />
+              </div>
+            </div>
+            <div className="mt-7">
+              {on ? (
+                <span className="flex w-full items-center justify-center gap-2 rounded-full bg-fit/20 py-4 text-sm text-[#5fe0a0]"><CheckCircle weight="fill" size={18} /> You're on the WhatsApp list</span>
+              ) : (
+                <Btn onClick={() => setOpen(true)} className="w-full py-4"><WhatsappLogo size={18} weight="fill" /> Notify me on WhatsApp</Btn>
+              )}
+              <p className="mt-3 flex items-center justify-center gap-2 text-xs text-white/45"><Lock size={14} /> {member === "Summit" ? "Your early access opens 24 hours before" : "Pass members get in 24 hours early"}</p>
+            </div>
+          </motion.div>
         </div>
       </section>
 

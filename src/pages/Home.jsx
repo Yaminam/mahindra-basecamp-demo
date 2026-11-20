@@ -9,6 +9,7 @@ import { Tilt, Magnetic, Marquee } from "../components/fx";
 import { MaskLines, ScrollText, CountUp, RevealImage, Rail } from "../components/premium";
 import WorldsPan from "../components/WorldsPan";
 import HeroReel from "../components/HeroReel";
+import { MahindraMark } from "../components/Logo";
 
 const Configurator = lazy(() => import("../components/Configurator"));
 const EASE = [0.16, 1, 0.3, 1];
@@ -378,19 +379,62 @@ function EvAndTrails() {
 
 function PassRed() {
   const points = useStore((s) => s.points);
+  const member = useStore((s) => s.member);
+  const vehicle = useStore((s) => s.vehicle);
+  const m = vehicle && modelById(vehicle.model);
+  const next = 2500;
+  const perks = [
+    ["1 pt per ₹10", "on accessories, merch, service and trails"],
+    ["24h early", "access to every numbered drop"],
+    ["Earned gear", "patches and tees money cannot buy"],
+  ];
   return (
-    <section className="mx-3 mt-24 overflow-hidden rounded-[40px] bg-red text-white sm:mx-5">
-      <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-20 sm:px-12 sm:py-24 md:grid-cols-[1.4fr_1fr] md:items-end">
+    <section className="relative mx-3 mt-24 overflow-hidden rounded-[40px] bg-red text-white sm:mx-5">
+      <div className="absolute -left-32 -top-32 h-[520px] w-[520px] rounded-full bg-white/15 blur-[120px]" />
+      <div className="absolute -bottom-40 right-0 h-[520px] w-[620px] rounded-full bg-black/25 blur-[120px]" />
+      <div className="relative mx-auto grid max-w-[1600px] items-center gap-14 px-6 py-20 sm:px-12 sm:py-24 lg:grid-cols-[1.05fr_1fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">Basecamp Pass</p>
-          <h2 className="display mt-5 text-6xl sm:text-8xl lg:text-[8rem]"><MaskLines lines={["Every mile", "counts."]} inView /></h2>
-          <p className="mt-6 max-w-lg text-lg text-white/75">One account for accessories, merch, service and trails. Free for every owner.</p>
+          <h2 className="display mt-5 text-6xl sm:text-8xl"><MaskLines lines={["Every mile", "counts."]} inView /></h2>
+          <p className="mt-6 max-w-md text-lg text-white/80">One account for accessories, merch, service and trails. Free for every Mahindra owner.</p>
+          <div className="mt-10 grid max-w-xl gap-px overflow-hidden rounded-[22px] bg-white/15 sm:grid-cols-3">
+            {perks.map(([k, v], i) => (
+              <motion.div key={k} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 + i * 0.08 }} className="bg-red p-5">
+                <p className="text-xl font-semibold tracking-tight">{k}</p>
+                <p className="mt-1 text-sm text-white/70">{v}</p>
+              </motion.div>
+            ))}
+          </div>
+          <Link to="/pass" className="press mt-10 inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold text-red hover:bg-bone hover:text-white">Open your Pass <ArrowRight size={16} weight="bold" /></Link>
         </div>
-        <div>
-          <p className="text-white/70">Your balance</p>
-          <p className="text-8xl font-semibold tracking-[-0.06em] tabular-nums"><CountUp to={points} /></p>
-          <Link to="/pass" className="press mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-white py-4 text-sm font-semibold text-red hover:bg-white/90">See your Pass <ArrowRight size={16} weight="bold" /></Link>
-        </div>
+
+        {/* membership card */}
+        <motion.div initial={{ opacity: 0, y: 50, rotate: -4 }} whileInView={{ opacity: 1, y: 0, rotate: -3 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 1.2, ease: EASE }} className="mx-auto w-full max-w-[520px]">
+          <Tilt holo max={14} className="rounded-[28px]">
+            <div className="relative aspect-[1.586] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#17181c_0%,#0b0c0e_55%,#2a0a10_100%)] p-7 shadow-[0_60px_120px_-30px_rgba(0,0,0,.6)] ring-1 ring-white/10 sm:p-8">
+              <div className="absolute inset-0 opacity-[0.07] [background-image:repeating-linear-gradient(115deg,#fff_0_1px,transparent_1px_14px)]" />
+              <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-red/40 blur-3xl" />
+              <div className="relative flex h-full flex-col justify-between">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3"><MahindraMark className="h-4 w-auto text-white" /><span className="h-4 w-px bg-white/30" /><span className="text-[11px] font-semibold uppercase tracking-[0.3em]">Basecamp</span></div>
+                  <span className="rounded-full border border-white/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em]">{member}</span>
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/50">Points</p>
+                  <p className="text-6xl font-semibold tracking-[-0.05em] tabular-nums sm:text-7xl"><CountUp to={points} /></p>
+                  <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-white/15">
+                    <motion.div className="h-full rounded-full bg-white" initial={{ width: 0 }} whileInView={{ width: `${Math.min(100, (points / next) * 100)}%` }} viewport={{ once: true }} transition={{ duration: 1.6, delay: 0.4, ease: EASE }} />
+                  </div>
+                  <p className="mt-2 text-xs text-white/50">{(next - points).toLocaleString("en-IN")} pts to your next reward</p>
+                </div>
+                <div className="flex items-end justify-between font-mono text-xs text-white/60">
+                  <span>{m ? `${m.name} owner` : "Mahindra owner"}</span>
+                  <span className="tracking-[0.2em]">BC 2026 0001 1947</span>
+                </div>
+              </div>
+            </div>
+          </Tilt>
+        </motion.div>
       </div>
     </section>
   );

@@ -4,7 +4,7 @@ import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { Garage, PencilSimple, Cube, ArrowRight } from "@phosphor-icons/react";
 import { useStore } from "../store";
 import { ALL_PRODUCTS, CATEGORIES, PACKS, modelById, fits, img, inr } from "../data";
-import { ProductCard, Btn, Reveal } from "../components/ui";
+import { ProductCard, Btn, Reveal, Photo } from "../components/ui";
 import { Rise } from "../components/fx";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -19,7 +19,7 @@ function FeatureTile({ p }) {
     <motion.div layout initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.7, ease: EASE }}
       className="group relative col-span-2 row-span-2 min-h-[520px] overflow-hidden rounded-[28px] lg:min-h-0">
       <Link to={`/p/${p.id}`} className="absolute inset-0" aria-label={p.name}>
-        <img src={img(p.image)} alt={p.name} className="h-full w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-105" />
+        <Photo src={p.image} alt={p.name} className="h-full w-full [&_img]:transition-transform [&_img]:duration-[1200ms] group-hover:[&_img]:scale-105" />
       </Link>
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 flex flex-col gap-5 p-7 text-white sm:flex-row sm:items-end sm:justify-between sm:p-10">

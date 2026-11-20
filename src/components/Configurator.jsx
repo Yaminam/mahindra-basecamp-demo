@@ -49,7 +49,8 @@ export default function Configurator({ full = false }) {
   };
 
   return (
-    <div className={`relative overflow-hidden ${night ? "bg-[#04060a] text-white" : "bg-[#e9eaee] text-bone"} ${full ? "h-[calc(100dvh-6rem)]" : "h-[88dvh] min-h-[680px] rounded-[36px]"}`}>
+    <div className={`relative overflow-hidden ${night ? "bg-[#04060a] text-white" : "bg-[#e9eaee] text-bone"} ${full ? "lg:h-[calc(100dvh-6rem)] lg:min-h-[780px]" : "rounded-[36px] lg:h-[88dvh] lg:min-h-[780px]"}`}>
+      <div className="relative h-[62vh] min-h-[420px] lg:absolute lg:inset-0 lg:h-auto">
       <Safe3D fallback="thar-red.jpg">
         <Studio className="absolute inset-0" night={night} config={{ model: model.id, paint: paint.hex, rim: rim.hex, roof, acc }} />
       </Safe3D>
@@ -63,7 +64,7 @@ export default function Configurator({ full = false }) {
             </button>
           ))}
         </div>
-        <div className="pointer-events-none mt-8">
+        <div className="pointer-events-none mt-8 hidden sm:block">
           <p className="text-sm opacity-55">{model.name}, in</p>
           <AnimatePresence mode="wait">
             <motion.h3 key={paint.id + model.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: 0.5, ease: EASE }} className="display mt-1 text-4xl sm:text-6xl">
@@ -81,10 +82,11 @@ export default function Configurator({ full = false }) {
         <button onClick={shuffle} aria-label="Surprise me" className={`press grid h-11 w-11 place-items-center rounded-full ${night ? "border border-white/15 bg-white/5 hover:border-white/40" : "border border-black/10 bg-white/80 hover:border-black/30"} backdrop-blur`}><Shuffle size={18} /></button>
         {!full && <Link to="/build" aria-label="Open full screen" className={`press grid h-11 w-11 place-items-center rounded-full ${night ? "border border-white/15 bg-white/5 hover:border-white/40" : "border border-black/10 bg-white/80 hover:border-black/30"} backdrop-blur`}><ArrowsOutSimple size={18} /></Link>}
       </div>
+      </div>
 
       <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }}
         data-lenis-prevent
-        className="no-scrollbar absolute inset-x-3 bottom-3 max-h-[52%] overflow-y-auto rounded-[28px] border border-white/10 bg-[#141518]/85 p-6 text-white backdrop-blur-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[370px] lg:bottom-auto lg:right-8 lg:top-8 lg:max-h-[calc(100%-4rem)]">
+        className="no-scrollbar relative m-3 overflow-y-auto rounded-[28px] border border-white/10 bg-[#141518]/90 p-6 text-white backdrop-blur-2xl lg:absolute lg:right-8 lg:top-8 lg:m-0 lg:max-h-[calc(100%-4rem)] lg:w-[370px]">
         <p className="text-xs uppercase tracking-[0.2em] text-white/45">Paint</p>
         <div className="mt-3 flex gap-2.5">
           {PAINTS.map((p) => (

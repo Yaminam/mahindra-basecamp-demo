@@ -46,11 +46,11 @@ export function Nav() {
         transition={{ duration: 0.45, ease: EASE }}
         className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${overHero ? "bg-transparent" : "border-b border-black/[0.06] bg-white/80 backdrop-blur-2xl backdrop-saturate-150"}`}
       >
-        <div className="mx-auto flex h-[72px] max-w-[1600px] items-center gap-10 px-5 sm:px-8">
+        <div className="mx-auto flex h-[72px] max-w-[1600px] items-center gap-3 px-4 sm:gap-8 sm:px-8 2xl:gap-10">
           <Link to="/" aria-label="Mahindra Basecamp home" className="shrink-0"><Logo invert={overHero} /></Link>
-          <nav className="hidden items-center gap-7 xl:flex">
+          <nav className="hidden items-center gap-5 xl:flex 2xl:gap-7">
             {LINKS.map(([to, label]) => (
-              <NavLink key={to} to={to} className={`group relative py-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] ${tone}`}>
+              <NavLink key={to} to={to} className={`group relative whitespace-nowrap py-2 text-[12px] font-semibold uppercase tracking-[0.12em] 2xl:text-[12.5px] 2xl:tracking-[0.14em] ${tone}`}>
                 {({ isActive }) => (
                   <>
                     <span className={`transition-opacity ${isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"}`}>{label}</span>
@@ -60,7 +60,7 @@ export function Nav() {
               </NavLink>
             ))}
           </nav>
-          <div className={`ml-auto flex items-center gap-1 ${tone}`}>
+          <div className={`ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1 ${tone}`}>
             <button onClick={openPicker} className={`press hidden items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-medium transition sm:flex ${overHero ? "bg-white/15 backdrop-blur hover:bg-white/25" : "bg-slab hover:bg-[#dfe0e3]"}`}>
               <Garage size={17} className={m ? "text-red" : ""} />
               {m ? <span>{m.name} <span className="opacity-60">{vehicle.variant}</span></span> : <span className="opacity-80">Add your vehicle</span>}

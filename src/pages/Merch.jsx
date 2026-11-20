@@ -271,7 +271,7 @@ export default function Merch() {
         )}
       </section>
 
-      <section className="mx-auto max-w-[1400px] px-4 pt-32 sm:px-6">
+      <section className="mx-auto max-w-[1400px] px-5 pt-32 sm:px-8">
         <Reveal><h2 className="display text-5xl sm:text-7xl">Fan essentials under ₹999.</h2></Reveal>
         <Rail className="mt-10">
           {under999.map((p, i) => (

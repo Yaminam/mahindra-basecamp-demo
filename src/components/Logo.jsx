@@ -9,10 +9,10 @@ export function MahindraMark({ className = "", title = "Mahindra" }) {
 
 export default function Logo({ className = "", invert = false }) {
   return (
-    <span className={`inline-flex items-center gap-3 ${className}`}>
-      <MahindraMark className={`h-[15px] w-auto ${invert ? "text-white" : "text-red"}`} />
+    <span className={`inline-flex items-center gap-2 sm:gap-3 ${className}`}>
+      <MahindraMark className={`h-[13px] sm:h-[15px] w-auto ${invert ? "text-white" : "text-red"}`} />
       <span className={`h-5 w-px ${invert ? "bg-white/30" : "bg-bone/20"}`} />
-      <span className={`text-[13px] font-semibold uppercase tracking-[0.32em] ${invert ? "text-white" : "text-bone"}`}>Basecamp</span>
+      <span className={`text-[11px] sm:text-[13px] font-semibold uppercase tracking-[0.24em] sm:tracking-[0.32em] ${invert ? "text-white" : "text-bone"}`}>Basecamp</span>
     </span>
   );
 }

@@ -6,28 +6,92 @@ import { img } from "../data";
 const EASE = [0.16, 1, 0.3, 1];
 const EXPO = [0.76, 0, 0.24, 1];
 
-/* Branded intro: counter to 100, then the white sheet lifts. Once per browser session. */
+/* Brand-film intro: a window flicks through the range while the real images load,
+   then it bursts to full screen and the loader lifts away. Once per session. */
+const INTRO = [
+  ["hero-thar.jpg", "Thar"],
+  ["range/scorpio-n.jpg", "Scorpio-N"],
+  ["range/xuv700.jpg", "XUV700"],
+  ["range/xev9e.jpg", "XEV 9e"],
+  ["range/bolero.jpg", "Bolero"],
+  ["racing.jpg", "Mahindra Racing"],
+  ["range/roxx.jpg", "Thar Roxx"],
+  ["range/tractor.jpg", "Tractors"],
+];
+
 export function Preloader() {
   const [show, setShow] = useState(() => !sessionStorage.getItem("bc-intro"));
   const [n, setN] = useState(0);
+  const [frame, setFrame] = useState(0);
+  const [burst, setBurst] = useState(false);
   useEffect(() => {
     if (!show) return;
-    const c = animate(0, 100, { duration: 1.7, ease: [0.65, 0, 0.35, 1], onUpdate: (v) => setN(Math.round(v)) });
-    const t = setTimeout(() => { sessionStorage.setItem("bc-intro", "1"); setShow(false); }, 2100);
-    return () => { c.stop(); clearTimeout(t); };
+    document.documentElement.style.overflow = "hidden";
+    let loaded = 0, t = 0, raf;
+    INTRO.forEach(([src]) => { const im = new Image(); im.onload = im.onerror = () => { loaded++; }; im.src = img(src); });
+    const start = performance.now();
+    const MIN = 2600;
+    const tick = (now) => {
+      const el = Math.max(0, now - start);
+      const timeP = Math.min(1, el / MIN);
+      const loadP = loaded / INTRO.length;
+      const p = Math.min(timeP, 0.15 + loadP * 0.85);
+      t = Math.max(t, p);
+      setN(Math.round(t * 100));
+      setFrame(Math.floor(el / 170) % INTRO.length);
+      if (t >= 1) {
+        setBurst(true);
+        setTimeout(() => { sessionStorage.setItem("bc-intro", "1"); setShow(false); document.documentElement.style.overflow = ""; }, 1100);
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(raf); document.documentElement.style.overflow = ""; };
   }, [show]);
+
   return (
     <AnimatePresence>
       {show && (
-        <motion.div className="fixed inset-0 z-[90] flex flex-col justify-between bg-white p-6 sm:p-10" exit={{ clipPath: "inset(0 0 100% 0)" }} transition={{ duration: 1, ease: EXPO }} style={{ clipPath: "inset(0 0 0% 0)" }}>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE }}>
-            <MahindraMark className="h-6 w-auto text-red sm:h-8" />
-          </motion.div>
-          <div className="flex items-end justify-between">
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="max-w-xs text-sm text-mute">Basecamp. Genuine accessories, official merch and trails for every Mahindra.</motion.p>
-            <span className="display tabular-nums text-[22vw] leading-[0.8] sm:text-[14rem]">{n}</span>
+        <motion.div
+          className="fixed inset-0 z-[90] overflow-hidden bg-[#0b0c0e] text-white"
+          exit={{ clipPath: "inset(0 0 100% 0)" }} transition={{ duration: 0.9, ease: EXPO }} style={{ clipPath: "inset(0 0 0% 0)" }}
+        >
+          {/* image window */}
+          <div className="absolute inset-0 grid place-items-center">
+            <motion.div
+              className="relative overflow-hidden bg-black"
+              initial={{ width: "0vw", height: "0vh", borderRadius: 24 }}
+              animate={burst ? { width: "100vw", height: "100vh", borderRadius: 0 } : { width: "min(46vw, 620px)", height: "min(28vw, 380px)", borderRadius: 24 }}
+              transition={{ duration: burst ? 0.9 : 1.1, ease: EXPO }}
+            >
+              {INTRO.map(([src], i) => (
+                <img key={src} src={img(src)} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ opacity: i === frame ? 1 : 0 }} />
+              ))}
+              <div className="absolute inset-0 bg-black/20" />
+            </motion.div>
           </div>
-          <motion.div className="absolute bottom-0 left-0 h-1 bg-red" style={{ width: `${n}%` }} />
+
+          {/* wordmark */}
+          <motion.div animate={{ opacity: burst ? 0 : 1 }} className="absolute inset-x-0 top-[calc(50%-min(14vw,190px)-4.5rem)] flex justify-center">
+            <motion.div initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ delay: 0.3, duration: 1.1, ease: EXPO }}>
+              <MahindraMark className="h-7 w-auto text-white sm:h-9" />
+            </motion.div>
+          </motion.div>
+
+          {/* model ticker */}
+          <motion.div animate={{ opacity: burst ? 0 : 1 }} className="absolute inset-x-0 top-[calc(50%+min(14vw,190px)+1.5rem)] flex items-center justify-center gap-4 text-sm">
+            <span className="tabular-nums text-red">{String(frame + 1).padStart(2, "0")}</span>
+            <span className="h-px w-8 bg-white/30" />
+            <span className="w-56 whitespace-nowrap font-medium uppercase tracking-[0.22em]">{INTRO[frame][1]}</span>
+          </motion.div>
+
+          {/* corners */}
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: burst ? 0 : 1 }} transition={{ delay: 0.5 }} className="absolute bottom-8 left-8 text-xs font-semibold uppercase tracking-[0.3em] text-white/50 sm:bottom-10 sm:left-10">Basecamp. One family, every road.</motion.p>
+          <motion.p animate={{ opacity: burst ? 0 : 1 }} className="absolute bottom-6 right-8 text-6xl font-semibold tabular-nums tracking-[-0.05em] sm:bottom-8 sm:right-10 sm:text-7xl">
+            {n}<span className="text-2xl text-white/40">%</span>
+          </motion.p>
+          <div className="absolute inset-x-0 bottom-0 h-[3px] bg-white/10"><div className="h-full bg-red" style={{ width: `${n}%` }} /></div>
         </motion.div>
       )}
     </AnimatePresence>

@@ -49,37 +49,37 @@ export default function Configurator({ full = false }) {
   };
 
   return (
-    <div className={`relative overflow-hidden bg-[#0c0d10] text-white ${full ? "h-[calc(100dvh-6rem)]" : "h-[88dvh] min-h-[680px] rounded-[36px]"}`}>
+    <div className={`relative overflow-hidden ${night ? "bg-[#04060a] text-white" : "bg-[#e9eaee] text-bone"} ${full ? "h-[calc(100dvh-6rem)]" : "h-[88dvh] min-h-[680px] rounded-[36px]"}`}>
       <Safe3D fallback="thar-red.jpg">
         <Studio className="absolute inset-0" night={night} config={{ model: model.id, paint: paint.hex, rim: rim.hex, roof, acc }} />
       </Safe3D>
 
       <div className="absolute left-6 top-6 max-w-[52%] sm:left-10 sm:top-10">
-        <div className="flex flex-wrap gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl">
+        <div className={`flex flex-wrap gap-1 rounded-full border p-1 backdrop-blur-xl ${night ? "border-white/10 bg-white/5" : "border-black/5 bg-white/70"}`}>
           {BUILD_MODELS.map((m) => (
-            <button key={m.id} onClick={() => pickModel(m)} className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${model.id === m.id ? "text-bone" : "text-white/60 hover:text-white"}`}>
-              {model.id === m.id && <motion.span layoutId="cfgmodel" className="absolute inset-0 rounded-full bg-white" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
+            <button key={m.id} onClick={() => pickModel(m)} className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${model.id === m.id ? (night ? "text-bone" : "text-white") : "opacity-60 hover:opacity-100"}`}>
+              {model.id === m.id && <motion.span layoutId="cfgmodel" className={`absolute inset-0 rounded-full ${night ? "bg-white" : "bg-bone"}`} transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
               <span className="relative">{m.name}</span>
             </button>
           ))}
         </div>
         <div className="pointer-events-none mt-8">
-          <p className="text-sm text-white/50">{model.name}, in</p>
+          <p className="text-sm opacity-55">{model.name}, in</p>
           <AnimatePresence mode="wait">
             <motion.h3 key={paint.id + model.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: 0.5, ease: EASE }} className="display mt-1 text-4xl sm:text-6xl">
               {paint.name}
             </motion.h3>
           </AnimatePresence>
-          <p className="mt-3 text-sm text-white/50">Drag to rotate. Every part is a genuine accessory.</p>
+          <p className="mt-3 text-sm opacity-55">Drag to rotate. Every part is a genuine accessory.</p>
         </div>
       </div>
 
       <div className="absolute bottom-6 left-6 flex gap-2 sm:bottom-10 sm:left-10">
-        <button onClick={() => setNight(!night)} aria-label="Toggle night mode" className="press flex h-11 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 text-sm backdrop-blur hover:border-white/40">
-          {night ? <Sun size={18} /> : <Moon size={18} />} {night ? "Studio" : "Night drive"}
+        <button onClick={() => setNight(!night)} aria-label="Toggle night mode" className={`press flex h-11 items-center gap-2 rounded-full px-4 text-sm backdrop-blur ${night ? "border border-white/15 bg-white/5 hover:border-white/40" : "border border-black/10 bg-white/80 hover:border-black/30"}`}>
+          {night ? <Sun size={18} /> : <Moon size={18} />} {night ? "Back to studio" : "Night drive"}
         </button>
-        <button onClick={shuffle} aria-label="Surprise me" className="press grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/5 backdrop-blur hover:border-white/40"><Shuffle size={18} /></button>
-        {!full && <Link to="/build" aria-label="Open full screen" className="press grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/5 backdrop-blur hover:border-white/40"><ArrowsOutSimple size={18} /></Link>}
+        <button onClick={shuffle} aria-label="Surprise me" className={`press grid h-11 w-11 place-items-center rounded-full ${night ? "border border-white/15 bg-white/5 hover:border-white/40" : "border border-black/10 bg-white/80 hover:border-black/30"} backdrop-blur`}><Shuffle size={18} /></button>
+        {!full && <Link to="/build" aria-label="Open full screen" className={`press grid h-11 w-11 place-items-center rounded-full ${night ? "border border-white/15 bg-white/5 hover:border-white/40" : "border border-black/10 bg-white/80 hover:border-black/30"} backdrop-blur`}><ArrowsOutSimple size={18} /></Link>}
       </div>
 
       <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }}

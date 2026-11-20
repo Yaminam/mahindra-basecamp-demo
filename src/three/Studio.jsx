@@ -1,12 +1,13 @@
-// Dark product studio for the configurator: mirror floor, overhead light strips, bloom.
-import { Suspense, useEffect, useRef, useState } from "react";
+// Configurator stage with two genuinely different moods:
+//  Studio: bright launch-shoot cyclorama, soft glossy floor.
+//  Night drive: moonlit, fog, stars, volumetric headlight beams.
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows, Environment, Lightformer, MeshReflectorMaterial, OrbitControls } from "@react-three/drei";
+import { ContactShadows, Environment, Lightformer, OrbitControls, SpotLight, Stars } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
-import Vehicle from "./Vehicle";
+import Vehicle, { BODIES } from "./Vehicle";
 
-/* keep the car clear of the side panel on wide screens */
 function Frame() {
   const { camera, size } = useThree();
   useFrame(() => {
@@ -16,23 +17,31 @@ function Frame() {
   return null;
 }
 
-function Strips({ night }) {
-  // visible light bars overhead: they show up as long highlights in the paint and floor
+/* Two volumetric cones from the headlamps, aimed down the road. */
+function Beams({ model }) {
+  const b = BODIES[model] || BODIES.thar;
+  const front = b.len / 2;
+  const zs = [-(b.w / 2 - 0.3), b.w / 2 - 0.3];
+  const left = useRef();
+  const right = useRef();
+  useLayoutEffect(() => {
+    [left, right].forEach((r, i) => {
+      if (!r.current) return;
+      r.current.target.position.set(front + 2.6, 0, zs[i] * 1.3);
+      r.current.target.updateMatrixWorld();
+    });
+  });
   return (
-    <group position={[0, 6.5, 0]}>
-      {[-2.4, 0, 2.4].map((z) => (
-        <mesh key={z} position={[0, 0, z]} rotation={[Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[9, 0.22]} />
-          <meshBasicMaterial color={night ? "#ffb3be" : "#ffffff"} toneMapped={false} />
-        </mesh>
+    <>
+      {[left, right].map((r, i) => (
+        <SpotLight key={i} ref={r} position={[front + 0.05, b.bodyY + 0.1, zs[i]]} color="#e9f1ff" angle={0.42} penumbra={0.6}
+          distance={4.2} attenuation={3.2} anglePower={5} intensity={9} volumetric={false} castShadow={false} />
       ))}
-    </group>
+    </>
   );
 }
 
 export default function Studio({ config, night = false, className = "" }) {
-  const bg = night ? "#050506" : "#0c0d10";
-  // only render while on screen: keeps laptops cool when the configurator is scrolled away
   const box = useRef(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -40,37 +49,50 @@ export default function Studio({ config, night = false, className = "" }) {
     if (box.current) io.observe(box.current);
     return () => io.disconnect();
   }, []);
+  const bg = night ? "#04060a" : "#e9eaee";
+  const model = config?.model || "thar";
+
   return (
     <div ref={box} className={className}>
-      <Canvas frameloop={visible ? "always" : "never"} shadows dpr={[1, 1.25]} camera={{ position: [11, 3.1, 9.6], fov: 26 }} gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}>
+      <Canvas frameloop={visible ? "always" : "never"} shadows dpr={[1, 1.25]} camera={{ position: [11, 3.1, 9.6], fov: 26 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: night ? 0.9 : 1.05 }}>
         <color attach="background" args={[bg]} />
-        <fog attach="fog" args={[bg, 12, 26]} />
+        <fog attach="fog" args={[bg, night ? 9 : 16, night ? 22 : 34]} />
         <Suspense fallback={null}>
-          <ambientLight intensity={night ? 0.05 : 0.18} />
-          <spotLight position={[0, 9, 0]} angle={0.5} penumbra={1} intensity={night ? 30 : 110} castShadow shadow-mapSize={[512, 512]} color="#ffffff" />
-          <spotLight position={[-7, 3, -4]} angle={0.6} penumbra={1} intensity={night ? 40 : 60} color="#dd052b" />
-          <Environment resolution={256} frames={1}>
-            <Lightformer form="rect" intensity={night ? 0.6 : 3} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 1, 1]} />
-            <Lightformer form="rect" intensity={night ? 0.4 : 2} position={[0, 6, 2.4]} rotation-x={Math.PI / 2} scale={[10, 0.6, 1]} />
-            <Lightformer form="rect" intensity={night ? 0.4 : 2} position={[0, 6, -2.4]} rotation-x={Math.PI / 2} scale={[10, 0.6, 1]} />
-            <Lightformer form="rect" intensity={night ? 0.3 : 1.2} position={[-8, 2, 0]} rotation-y={Math.PI / 2} scale={[14, 1.5, 1]} />
-            <Lightformer form="rect" intensity={night ? 0.3 : 1.2} position={[8, 2, 0]} rotation-y={-Math.PI / 2} scale={[14, 1.5, 1]} />
-            <Lightformer form="ring" color="#dd052b" intensity={night ? 4 : 2} position={[0, 2, -9]} scale={5} />
+          {night ? (
+            <>
+              <ambientLight intensity={0.04} />
+              <directionalLight position={[-6, 8, -4]} intensity={0.55} color="#7f9cff" castShadow shadow-mapSize={[512, 512]} />
+              <pointLight position={[-5, 2.5, 4]} intensity={6} color="#dd052b" distance={10} />
+              <Stars radius={60} depth={20} count={1200} factor={3} saturation={0} fade speed={0.4} />
+              <pointLight position={[(BODIES[model] || BODIES.thar).len / 2 + 1.2, 0.5, 0]} intensity={5} distance={4} color="#dfe8ff" />
+            </>
+          ) : (
+            <>
+              <ambientLight intensity={0.55} />
+              <directionalLight position={[5, 9, 5]} intensity={1.6} castShadow shadow-mapSize={[512, 512]} />
+            </>
+          )}
+          <Environment resolution={128} frames={1}>
+            <Lightformer form="rect" intensity={night ? 0.25 : 2.4} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 2, 1]} />
+            <Lightformer form="rect" intensity={night ? 0.15 : 1.4} position={[-8, 2, 0]} rotation-y={Math.PI / 2} scale={[14, 1.5, 1]} />
+            <Lightformer form="rect" intensity={night ? 0.15 : 1.4} position={[8, 2, 0]} rotation-y={-Math.PI / 2} scale={[14, 1.5, 1]} />
+            <Lightformer form="ring" color={night ? "#5b78ff" : "#ffffff"} intensity={night ? 1.2 : 1} position={[0, 2, -9]} scale={5} />
           </Environment>
-          <Strips night={night} />
+
           <Vehicle {...config} lights={night || config?.lights} />
-          <ContactShadows position={[0, 0.002, 0]} opacity={0.85} scale={10} blur={2.2} far={2} color="#000000" />
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.001, 0]}>
-            <planeGeometry args={[60, 60]} />
-            <MeshReflectorMaterial blur={[200, 60]} resolution={384} mixBlur={1} mixStrength={night ? 30 : 18} roughness={0.85} depthScale={1.1} minDepthThreshold={0.4} maxDepthThreshold={1.3} color="#141518" metalness={0.6} />
+          <ContactShadows position={[0, 0.002, 0]} opacity={night ? 0.9 : 0.55} scale={10} blur={2.4} far={2} color="#000000" />
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.001, 0]} receiveShadow>
+            <planeGeometry args={[80, 80]} />
+            <meshStandardMaterial color={night ? "#0a0c11" : "#dcdee3"} roughness={night ? 0.95 : 0.55} metalness={0.05} />
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 0]}>
-            <ringGeometry args={[3.55, 3.58, 160]} />
-            <meshBasicMaterial color="#dd052b" toneMapped={false} />
+            <ringGeometry args={[3.6, 3.63, 160]} />
+            <meshBasicMaterial color="#dd052b" toneMapped={false} transparent opacity={night ? 0.9 : 0.6} />
           </mesh>
           <EffectComposer disableNormalPass>
-            <Bloom mipmapBlur luminanceThreshold={0.95} intensity={night ? 1.4 : 0.7} />
-            <Vignette offset={0.25} darkness={0.75} />
+            <Bloom mipmapBlur luminanceThreshold={night ? 0.92 : 1} intensity={night ? 1.5 : 0.4} />
+            <Vignette offset={0.3} darkness={night ? 0.85 : 0.35} />
           </EffectComposer>
         </Suspense>
         <Frame />

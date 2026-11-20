@@ -14,14 +14,16 @@ const SHOT = 5200; // ms per clip
 
 export const REEL = [
   { src: "reel/thar-a.mp4", label: "Thar" },
+  { still: "jacket.jpg", label: "Heritage Field Jacket", to: "/p/heritage-jacket", pos: "50% 30%" },
   { src: "reel/scorpio.mp4", label: "Scorpio-N" },
+  { still: "hoodie.jpg", label: "Trail Hoodie", to: "/p/trail-hoodie", pos: "50% 35%" },
   { src: "reel/xev9e.mp4", label: "XEV 9e, Born Electric" },
-  { src: "reel/thar-b.mp4", label: "Thar, off the road" },
-  { src: "reel/xuv.mp4", label: "XUV700" },
-  { src: "reel/roxx.mp4", label: "Thar Roxx, Sonamarg" },
   { src: "reel/racing.mp4", label: "Mahindra Racing" },
+  { still: "merch/polo-black.jpg", label: "Team Polo", to: "/p/team-polo", pos: "50% 50%" },
+  { src: "reel/roxx.mp4", label: "Thar Roxx, Sonamarg" },
+  { still: "cap.jpg", label: "Team Trucker Cap", to: "/p/team-cap", pos: "50% 25%" },
+  { src: "reel/xuv.mp4", label: "XUV700" },
   { src: "reel/bolero.mp4", label: "Bolero" },
-  { src: "reel/thar-c.mp4", label: "Thar" },
   { src: "reel/tractor.mp4", label: "Mahindra Tractors" },
 ];
 
@@ -42,6 +44,7 @@ export default function HeroReel() {
   const textY = useTransform(scrollYProgress, [0, 0.6], ["0%", "-14%"]);
 
   const drop = (src) => setClips((c) => (c.length > 1 ? c.filter((x) => x.src !== src) : c));
+  const keyOf = (c) => c.src || c.still;
 
   // advance on a timer; restart the incoming clip from the top
   useEffect(() => {
@@ -67,7 +70,12 @@ export default function HeroReel() {
   return (
     <section ref={ref} className="relative h-[100dvh] min-h-[660px]">
       <motion.div style={{ clipPath: clip }} className="absolute inset-0 overflow-hidden bg-black">
-        {clips.map((c, i) => (i !== cur && i !== (cur + 1) % clips.length) ? null : (
+        {clips.map((c, i) => (i !== cur && i !== (cur + 1) % clips.length) ? null : c.still ? (
+          <motion.img key={c.still} src={img(c.still)} alt="" style={{ objectPosition: c.pos }}
+            initial={false} animate={{ opacity: i === cur ? 1 : 0, scale: i === cur ? 1.12 : 1 }}
+            transition={{ opacity: { duration: 0.9, ease: "easeInOut" }, scale: { duration: SHOT / 1000 + 1, ease: "linear" } }}
+            className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
           <motion.video
             key={c.src}
             ref={(el) => (vids.current[i] = el)}
@@ -90,15 +98,15 @@ export default function HeroReel() {
         </h1>
         <div className="mt-8 flex flex-col gap-6 border-t border-white/20 pt-6 md:flex-row md:items-end md:justify-between">
           <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1, duration: 0.9, ease: EASE }} className="max-w-sm text-lg text-white/80">
-            Genuine accessories, official merch and trails for every Mahindra on the road.
+            Official merch, genuine accessories and trails for every Mahindra on the road.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.25, duration: 0.9, ease: EASE }} className="flex flex-wrap items-center gap-3">
             <Magnetic>
-              <button onClick={() => (m ? nav("/shop") : openPicker())} className="press flex items-center gap-2 rounded-full bg-white px-6 py-4 text-sm font-semibold text-bone hover:bg-red hover:text-white">
-                {m ? `Shop for your ${m.name}` : "Select your vehicle"} <ArrowRight size={16} weight="bold" />
-              </button>
+              <Link to="/merch" className="press flex items-center gap-2 rounded-full bg-red px-7 py-4 text-sm font-semibold text-white hover:bg-white hover:text-bone">
+                Shop the merch <ArrowRight size={16} weight="bold" />
+              </Link>
             </Magnetic>
-            <Magnetic><Link to="/merch" className="press flex items-center rounded-full border border-white/40 bg-white/10 px-6 py-4 text-sm font-semibold text-white backdrop-blur hover:border-white">Shop merch</Link></Magnetic>
+            <Magnetic><button onClick={() => (m ? nav("/shop") : openPicker())} className="press flex items-center rounded-full border border-white/40 bg-white/10 px-6 py-4 text-sm font-semibold text-white backdrop-blur hover:border-white">{m ? `Accessories for your ${m.name}` : "Accessories for your car"}</button></Magnetic>
           </motion.div>
         </div>
 
@@ -109,7 +117,7 @@ export default function HeroReel() {
           </button>
           <div className="flex flex-1 gap-1.5">
             {clips.map((c, i) => (
-              <button key={c.src} onClick={() => go(i)} aria-label={c.label} className="group relative h-6 flex-1">
+              <button key={keyOf(c)} onClick={() => go(i)} aria-label={c.label} className="group relative h-6 flex-1">
                 <span className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 overflow-hidden rounded-full bg-white/25 transition group-hover:bg-white/45">
                   {i < cur && <span className="absolute inset-0 bg-white" />}
                   {i === cur && (

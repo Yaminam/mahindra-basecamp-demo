@@ -11,6 +11,7 @@ import WorldsPan from "../components/WorldsPan";
 import HeroReel from "../components/HeroReel";
 import MerchShowcase from "../components/MerchShowcase";
 import MerchTicker from "../components/MerchTicker";
+import MerchCategories from "../components/MerchCategories";
 import { ShopTheLook } from "./Merch";
 import { MahindraMark } from "../components/Logo";
 
@@ -449,16 +450,17 @@ export default function Home() {
       <HeroReel />
       <MerchShowcase />
       <MerchTicker />
+      <MerchCategories />
+      <MerchSpread />
+      <ShopTheLook />
+      <DropNight />
+      <BestSellers />
       <Statement />
       <Stats />
       <BuildSection />
       <Story />
       <WorldsPan />
-      <MerchSpread />
-      <ShopTheLook />
-      <DropNight />
       <Packs />
-      <BestSellers />
       <EvAndTrails />
       <PassRed />
     </>

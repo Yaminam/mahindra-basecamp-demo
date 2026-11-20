@@ -13,10 +13,11 @@ const EASE = [0.16, 1, 0.3, 1];
 const matchModel = (v) => {
   if (!v) return BUILD_MODELS[0];
   const id = v.model;
-  if (id === "thar" || id === "roxx") return BUILD_MODELS[0];
-  if (id.startsWith("scorpio")) return BUILD_MODELS[1];
-  if (id.startsWith("xuv") || id === "boleroneo") return BUILD_MODELS[2];
-  return BUILD_MODELS[3];
+  if (id === "roxx") return BUILD_MODELS[0];
+  if (id === "thar") return BUILD_MODELS[1];
+  if (id.startsWith("scorpio")) return BUILD_MODELS[2];
+  if (id.startsWith("xuv") || id === "boleroneo") return BUILD_MODELS[3];
+  return BUILD_MODELS[4];
 };
 
 export default function Configurator({ full = false }) {

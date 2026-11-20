@@ -7,6 +7,7 @@ import { ContactShadows, Environment, Lightformer, OrbitControls, SpotLight, Sta
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import Vehicle, { BODIES } from "./Vehicle";
+import RealCar, { REAL } from "./RealCar";
 
 function Frame() {
   const { camera, size } = useThree();
@@ -19,7 +20,7 @@ function Frame() {
 
 /* Two volumetric cones from the headlamps, aimed down the road. */
 function Beams({ model }) {
-  const b = BODIES[model] || BODIES.thar;
+  const b = (BODIES[model] || BODIES.thar);
   const front = b.len / 2;
   const zs = [-(b.w / 2 - 0.3), b.w / 2 - 0.3];
   const left = useRef();
@@ -65,7 +66,7 @@ export default function Studio({ config, night = false, className = "" }) {
               <directionalLight position={[-6, 8, -4]} intensity={0.55} color="#7f9cff" castShadow shadow-mapSize={[512, 512]} />
               <pointLight position={[-5, 2.5, 4]} intensity={6} color="#dd052b" distance={10} />
               <Stars radius={60} depth={20} count={1200} factor={3} saturation={0} fade speed={0.4} />
-              <pointLight position={[(BODIES[model] || BODIES.thar).len / 2 + 1.2, 0.5, 0]} intensity={5} distance={4} color="#dfe8ff" />
+              <pointLight position={[((BODIES[model] || BODIES.thar)).len / 2 + 1.2, 0.5, 0]} intensity={5} distance={4} color="#dfe8ff" />
             </>
           ) : (
             <>
@@ -80,7 +81,11 @@ export default function Studio({ config, night = false, className = "" }) {
             <Lightformer form="ring" color={night ? "#5b78ff" : "#ffffff"} intensity={night ? 1.2 : 1} position={[0, 2, -9]} scale={5} />
           </Environment>
 
-          <Vehicle {...config} lights={night || config?.lights} />
+          {REAL[model] ? (
+            <Suspense fallback={null}><RealCar {...config} lights={night || config?.lights} /></Suspense>
+          ) : (
+            <Vehicle {...config} lights={night || config?.lights} />
+          )}
           <ContactShadows position={[0, 0.002, 0]} opacity={night ? 0.9 : 0.55} scale={10} blur={2.4} far={2} color="#000000" />
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.001, 0]} receiveShadow>
             <planeGeometry args={[80, 80]} />

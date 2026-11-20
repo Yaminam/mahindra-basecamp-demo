@@ -150,7 +150,7 @@ function Grille({ b, front, y, paint }) {
   );
 }
 
-function RoofRack({ x, y, len, w }) {
+export function RoofRack({ x, y, len, w }) {
   const steel = <meshStandardMaterial color="#1c1d20" metalness={0.7} roughness={0.4} />;
   return (
     <group position={[x, y + 0.07, 0]}>
@@ -160,7 +160,7 @@ function RoofRack({ x, y, len, w }) {
     </group>
   );
 }
-function RoofBox({ x, y, len, w }) {
+export function RoofBox({ x, y, len, w }) {
   return (
     <group position={[x, y + 0.08, 0]}>
       {[-(w / 2 - 0.15), w / 2 - 0.15].map((z) => <mesh key={z} position={[0, 0, z]}><boxGeometry args={[len * 0.8, 0.04, 0.04]} /><meshStandardMaterial color="#1c1d20" metalness={0.7} roughness={0.4} /></mesh>)}
@@ -206,35 +206,44 @@ export default function Vehicle({ model = "thar", paint = PAINTS[0].hex, rim = R
         <mesh key={z} position={[roofX, roofTop + 0.06, z]}><boxGeometry args={[roofLen * 0.95, 0.04, 0.04]} /><meshStandardMaterial color="#b9bcc1" metalness={1} roughness={0.2} /></mesh>
       ))}
 
-      {acc.rack && <RoofRack x={roofX} y={roofTop} len={roofLen} w={b.w} />}
-      {acc.roofbox && <RoofBox x={roofX} y={roofTop} len={roofLen} w={b.w} />}
+      <Accessories acc={acc} lights={lights} d={{ front, w: b.w, roofX, roofTop, roofLen, bodyY: b.bodyY, bodyH: b.bodyH, top, snorkelX: b.cabX + b.cabLen / 2 + 0.05, wheelX: b.wheelX }} />
+    </group>
+  );
+}
+
+/* Accessory kit, positioned from body dimensions so it works on the built-in and real models. */
+export function Accessories({ acc = {}, lights = false, d }) {
+  return (
+    <group>
+      {acc.rack && <RoofRack x={d.roofX} y={d.roofTop} len={d.roofLen} w={d.w} />}
+      {acc.roofbox && <RoofBox x={d.roofX} y={d.roofTop} len={d.roofLen} w={d.w} />}
       {acc.lightbar && (
-        <group position={[roofX + roofLen / 2 - 0.05, roofTop + 0.08, 0]}>
-          <mesh castShadow><boxGeometry args={[0.12, 0.11, b.w - 0.35]} /><Trim /></mesh>
-          <mesh position={[0.065, 0, 0]}><boxGeometry args={[0.01, 0.07, b.w - 0.42]} /><Glow on={lights} base={0.3} hi={7} color="#fff6e0" /></mesh>
+        <group position={[d.roofX + d.roofLen / 2 - 0.05, d.roofTop + 0.08, 0]}>
+          <mesh castShadow><boxGeometry args={[0.12, 0.11, d.w - 0.35]} /><Trim /></mesh>
+          <mesh position={[0.065, 0, 0]}><boxGeometry args={[0.01, 0.07, d.w - 0.42]} /><Glow on={lights} base={0.3} hi={7} color="#fff6e0" /></mesh>
         </group>
       )}
       {acc.bumper && (
-        <group position={[front + 0.12, b.bodyY - b.bodyH / 2 + 0.08, 0]}>
-          <RoundedBox args={[0.42, 0.38, b.w + 0.18]} radius={0.04} castShadow><meshStandardMaterial color="#26272a" metalness={0.6} roughness={0.45} /></RoundedBox>
+        <group position={[d.front + 0.12, d.bodyY - d.bodyH / 2 + 0.08, 0]}>
+          <RoundedBox args={[0.42, 0.38, d.w + 0.18]} radius={0.04} castShadow><meshStandardMaterial color="#26272a" metalness={0.6} roughness={0.45} /></RoundedBox>
           <mesh position={[0.2, 0.02, 0]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[0.09, 0.09, 0.55, 24]} /><meshStandardMaterial color="#111" metalness={0.8} roughness={0.3} /></mesh>
           {[-0.68, 0.68].map((z) => <mesh key={z} position={[0.24, -0.1, z]} rotation={[0, Math.PI / 2, 0]}><torusGeometry args={[0.06, 0.022, 10, 24]} /><meshStandardMaterial color="#d11a22" roughness={0.4} /></mesh>)}
         </group>
       )}
       {acc.snorkel && (
-        <group position={[b.cabX + b.cabLen / 2 + 0.05, 0, b.w / 2 + 0.06]}>
-          <mesh position={[0, top + 0.25, 0]}><cylinderGeometry args={[0.055, 0.055, 1.2, 16]} /><Trim color="#18181a" rough={0.6} /></mesh>
-          <RoundedBox args={[0.22, 0.14, 0.14]} radius={0.03} position={[0.05, top + 0.9, 0]}><Trim color="#18181a" rough={0.6} /></RoundedBox>
+        <group position={[d.snorkelX, 0, d.w / 2 + 0.06]}>
+          <mesh position={[0, d.top + 0.25, 0]}><cylinderGeometry args={[0.055, 0.055, 1.2, 16]} /><Trim color="#18181a" rough={0.6} /></mesh>
+          <RoundedBox args={[0.22, 0.14, 0.14]} radius={0.03} position={[0.05, d.top + 0.9, 0]}><Trim color="#18181a" rough={0.6} /></RoundedBox>
         </group>
       )}
       {acc.ladder && (
-        <group position={[-front - 0.08, top + 0.25, -(b.w / 2 - 0.25)]}>
+        <group position={[-d.front - 0.08, d.top + 0.25, -(d.w / 2 - 0.25)]}>
           {[-0.17, 0.17].map((z) => <mesh key={z} position={[0, 0, z]}><boxGeometry args={[0.04, 1.1, 0.04]} /><meshStandardMaterial color="#1c1d20" metalness={0.7} roughness={0.4} /></mesh>)}
           {[-0.4, -0.15, 0.1, 0.35].map((y) => <mesh key={y} position={[0, y, 0]}><boxGeometry args={[0.04, 0.035, 0.34]} /><meshStandardMaterial color="#1c1d20" metalness={0.7} roughness={0.4} /></mesh>)}
         </group>
       )}
       {acc.steps && [-1, 1].map((s) => (
-        <mesh key={s} position={[(b.wheelX[0] + b.wheelX[1]) / 2, 0.5, s * (b.w / 2 + 0.06)]} castShadow><boxGeometry args={[Math.abs(b.wheelX[0] - b.wheelX[1]) - 0.75, 0.05, 0.16]} /><meshStandardMaterial color="#2a2b2e" metalness={0.8} roughness={0.3} /></mesh>
+        <mesh key={s} position={[(d.wheelX[0] + d.wheelX[1]) / 2, 0.5, s * (d.w / 2 + 0.06)]} castShadow><boxGeometry args={[Math.abs(d.wheelX[0] - d.wheelX[1]) - 0.75, 0.05, 0.16]} /><meshStandardMaterial color="#2a2b2e" metalness={0.8} roughness={0.3} /></mesh>
       ))}
     </group>
   );

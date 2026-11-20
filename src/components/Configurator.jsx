@@ -84,7 +84,7 @@ export default function Configurator({ full = false }) {
 
       <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }}
         data-lenis-prevent
-        className="no-scrollbar absolute inset-x-3 bottom-3 max-h-[52%] overflow-y-auto rounded-[28px] border border-white/10 bg-[#141518]/80 p-6 backdrop-blur-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[370px] lg:bottom-auto lg:right-8 lg:top-8 lg:max-h-[calc(100%-4rem)]">
+        className="no-scrollbar absolute inset-x-3 bottom-3 max-h-[52%] overflow-y-auto rounded-[28px] border border-white/10 bg-[#141518]/85 p-6 text-white backdrop-blur-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[370px] lg:bottom-auto lg:right-8 lg:top-8 lg:max-h-[calc(100%-4rem)]">
         <p className="text-xs uppercase tracking-[0.2em] text-white/45">Paint</p>
         <div className="mt-3 flex gap-2.5">
           {PAINTS.map((p) => (

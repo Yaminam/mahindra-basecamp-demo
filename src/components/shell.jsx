@@ -12,9 +12,9 @@ const EASE = [0.16, 1, 0.3, 1];
 export const MODE_LABEL = { ship: "Ship home (DIY)", dealer: "Fit at dealer", doorstep: "Doorstep fitment" };
 
 const LINKS = [
+  ["/merch", "Merch", "racing.jpg"],
   ["/build", "Build in 3D", "thar-red.jpg"],
   ["/shop", "Accessories", "hero-thar.jpg"],
-  ["/merch", "Merch", "racing.jpg"],
   ["/worlds", "Worlds", "scorpio-spiti.jpg"],
   ["/drops", "Drops", "jacket.jpg"],
   ["/trails", "Trails", "trail-ladakh.jpg"],
@@ -54,6 +54,7 @@ export function Nav() {
                 {({ isActive }) => (
                   <>
                     <span className={`transition-opacity ${isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"}`}>{label}</span>
+                    {to === "/merch" && <span className="ml-1.5 inline-block -translate-y-1.5 rounded-full bg-red px-1.5 py-0.5 align-top text-[9px] font-bold tracking-[0.08em] text-white">NEW</span>}
                     {isActive && <motion.span layoutId="navline" className="absolute -bottom-0.5 left-0 h-[2px] w-full bg-red" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
                   </>
                 )}

@@ -113,7 +113,7 @@ const LOOKS = [
   ] },
 ];
 
-function ShopTheLook() {
+export function ShopTheLook() {
   const add = useStore((s) => s.add);
   const [look, setLook] = useState(0);
   const [open, setOpen] = useState(null);

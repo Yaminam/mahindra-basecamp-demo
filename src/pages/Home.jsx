@@ -9,6 +9,9 @@ import { Tilt, Magnetic, Marquee } from "../components/fx";
 import { MaskLines, ScrollText, CountUp, RevealImage, Rail } from "../components/premium";
 import WorldsPan from "../components/WorldsPan";
 import HeroReel from "../components/HeroReel";
+import MerchShowcase from "../components/MerchShowcase";
+import MerchTicker from "../components/MerchTicker";
+import { ShopTheLook } from "./Merch";
 import { MahindraMark } from "../components/Logo";
 
 const Configurator = lazy(() => import("../components/Configurator"));
@@ -334,7 +337,7 @@ function Packs() {
 
 function BestSellers() {
   const vehicle = useStore((s) => s.vehicle);
-  const ids = ["trail-roof-carrier", "trail-hoodie", "recovery-kit", "diecast-roxx", "floor-mats", "kids-thar", "wallbox-72", "basecamp-cap"];
+  const ids = ["team-polo", "trail-hoodie", "team-softshell", "diecast-roxx", "team-cap", "kids-thar", "heritage-jacket", "trail-roof-carrier"];
   let list = ids.map(productById);
   if (vehicle) list = [...list].sort((a, b) => fits(b, vehicle) - fits(a, vehicle));
   return (
@@ -444,17 +447,19 @@ export default function Home() {
   return (
     <>
       <HeroReel />
+      <MerchShowcase />
+      <MerchTicker />
       <Statement />
       <Stats />
       <BuildSection />
       <Story />
       <WorldsPan />
       <MerchSpread />
+      <ShopTheLook />
       <DropNight />
       <Packs />
       <BestSellers />
       <EvAndTrails />
-      <Marquee items={["Thar", "Thar Roxx", "Scorpio-N", "XUV700", "XUV 3XO", "BE 6", "XEV 9e", "Bolero Neo"]} />
       <PassRed />
     </>
   );

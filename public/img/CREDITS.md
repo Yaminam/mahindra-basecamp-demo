@@ -50,3 +50,5 @@ roof-rack.jpg was removed (vehicle resembled a Nissan Patrol). xuv.jpg is kept o
 | hero-2.mp4 (+ hero-2-poster.jpg) | https://www.pexels.com/video/suv-off-road-drifting-in-urban-construction-site-37349527/ | Harshal . (https://www.pexels.com/@baakya/) | Pexels License |
 
 hero.mp4 is a black Mahindra Thar (THAR embossed on the bumper) on a dusty trail, 17 s. It was re-encoded to H.264 CRF 23 with no audio. hero-2.mp4 is a green Mahindra Thar drifting in dust, 24 s, with the audio track removed.
+
+| kids-ride.jpg | https://www.pexels.com/photo/a-toy-car-23474062/ | Pexels License | Red and black 4x4 kids ride-on toy, no child |

@@ -72,7 +72,9 @@ function Product() {
   const dealerObj = DEALERS.find((d) => d.id === dealer);
   const collection = COLLECTIONS.find((c) => c.id === p.collection);
   const world = WORLDS.find((w) => w.id === p.world);
-  const gallery = [...new Set([p.image, p.image2].filter(Boolean))];
+  const colorImg = p.colorImages?.[color];
+  const gallery = [...new Set([colorImg, p.image, p.image2].filter(Boolean))];
+  const colorName = p.colorNames?.[p.colors?.indexOf(color)] || "";
   const fitModels = p.fit ? MODELS.filter((x) => p.fit.includes(x.id)) : [];
   const in3d = BUILD_ACC.some((a) => a.product === p.id);
   const related = ALL_PRODUCTS.filter((x) => x.id !== p.id && ((p.collection && x.collection === p.collection) || (!p.collection && (x.world === p.world || x.cat === p.cat) && (!vehicle || fits(x, vehicle))))).slice(0, 8);
@@ -88,7 +90,8 @@ function Product() {
   const addToBag = () => {
     if (blocked || needsSize) { buyRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
     const print = printOn && (pName || pNum) ? ` (${[pName, pNum].filter(Boolean).join(" ")})` : "";
-    add({ id: p.id + (print ? "-print" : ""), name: p.name + print, price: p.price + fee, image: p.image, mode, kind: p.kind, size: size || undefined,
+    const col = p.colors?.length > 1 && colorName ? `, ${colorName}` : "";
+    add({ id: p.id + (col ? "-" + colorName.toLowerCase().replace(/[^a-z]+/g, "") : "") + (print ? "-print" : ""), name: p.name + col + print, price: p.price + fee, image: colorImg || p.image, mode, kind: p.kind, size: size || undefined,
       dealer: mode === "dealer" ? dealerObj.name : undefined, slot: mode === "dealer" ? slot : undefined });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
@@ -156,7 +159,7 @@ function Product() {
 
             {p.colors && (
               <div className="mt-8">
-                <p className="text-sm text-mute">Colour</p>
+                <p className="text-sm text-mute">Colour{colorName && <span className="ml-2 font-medium text-bone">{colorName}</span>}</p>
                 <div className="mt-2 flex gap-2">
                   {p.colors.map((c) => <button key={c} onClick={() => setColor(c)} aria-label={c} className={`h-10 w-10 rounded-full ring-offset-2 ring-offset-ink ${color === c ? "ring-2 ring-bone" : "ring-1 ring-black/15"}`} style={{ background: c }} />)}
                 </div>

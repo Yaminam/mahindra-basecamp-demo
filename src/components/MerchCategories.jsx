@@ -9,7 +9,7 @@ const TILES = [
   { cat: "Apparel", image: "hoodie.jpg", span: "lg:row-span-2" },
   { cat: "Headwear", image: "cap.jpg", span: "" },
   { cat: "Collectibles", image: "diecast.jpg", span: "" },
-  { cat: "Kids", image: "kids-rideon.jpg", span: "lg:col-span-2" },
+  { cat: "Kids", image: "kids-ride.jpg", span: "lg:col-span-2" },
   { cat: "Pets", image: "dog.jpg", span: "" },
   { cat: "Accessories", image: "backpack.jpg", span: "" },
 ];

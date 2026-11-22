@@ -9,14 +9,24 @@ import { Accessories } from "./Vehicle";
 export const REAL = {
   roxx: { url: "models/thar-roxx.glb", len: 4.43, paint: /carpaint/i, roof: /roof_color/i, rim: /rim_ring/i, flip: true },
   thar: { url: "models/thar-og.glb", len: 3.98, paint: /aiStandardSurface(21|33)SG/, roof: null, rim: null, flip: false },
+  scorpio: { url: "models/scorpio-n.glb", len: 4.66, paint: /^primary$/, roof: null, rim: null, flip: true, steps: true, roofAdj: -0.13 },
+  xuv: { url: "models/xuv-3xo.glb", len: 3.99, paint: null, roof: null, rim: null, flip: true },
 };
+
+/* bounding box of visible meshes only (ignores hidden shadow planes) */
+function visibleBox(obj) {
+  obj.updateMatrixWorld(true);
+  const box = new THREE.Box3();
+  obj.traverse((o) => { if (o.isMesh && o.visible) box.expandByObject(o); });
+  return box;
+}
 
 export default function RealCar({ model, paint, rim, roof = "black", acc = {}, lights = false }) {
   const spec = REAL[model];
   const { scene } = useGLTF("./" + spec.url);
 
   // clone once per model, normalise orientation/scale/position, collect recolourable materials
-  const { root, dims, mats } = useMemo(() => {
+  const { root, dims, mats, roof: roofY } = useMemo(() => {
     const root = scene.clone(true);
     const mats = { paint: [], roof: [], rim: [] };
     root.traverse((o) => {
@@ -35,25 +45,44 @@ export default function RealCar({ model, paint, rim, roof = "black", acc = {}, l
     });
     const wrap = new THREE.Group();
     wrap.add(root);
-    let box = new THREE.Box3().setFromObject(wrap);
+    // models often ship a flat shadow plane under the car: hide it so it neither shows nor skews the size
+    const whole = visibleBox(wrap);
+    const span = whole.getSize(new THREE.Vector3());
+    const maxDim = Math.max(span.x, span.z);
+    root.traverse((o) => {
+      if (!o.isMesh) return;
+      const bb = new THREE.Box3().setFromObject(o);
+      const sz = bb.getSize(new THREE.Vector3());
+      if (sz.y < maxDim * 0.02 && Math.max(sz.x, sz.z) > maxDim * 0.5) o.visible = false;
+    });
+    let box = visibleBox(wrap);
     let size = box.getSize(new THREE.Vector3());
     if (size.z > size.x) { root.rotation.y = Math.PI / 2; }
     if (spec.flip) root.rotation.y += Math.PI;
     wrap.updateMatrixWorld(true);
-    box = new THREE.Box3().setFromObject(wrap);
+    box = visibleBox(wrap);
     size = box.getSize(new THREE.Vector3());
     const k = spec.len / size.x;
     root.scale.multiplyScalar(k);
     wrap.updateMatrixWorld(true);
-    box = new THREE.Box3().setFromObject(wrap);
+    box = visibleBox(wrap);
     const c = box.getCenter(new THREE.Vector3());
     root.position.x -= c.x;
     root.position.z -= c.z;
     root.position.y -= box.min.y;
     wrap.updateMatrixWorld(true);
-    box = new THREE.Box3().setFromObject(wrap);
+    box = visibleBox(wrap);
     size = box.getSize(new THREE.Vector3());
-    return { root: wrap, dims: size, mats };
+    // roof height from the biggest body panel, so stray parts (lights, proxies) can not inflate it
+    let roof = 0, best = 0;
+    root.traverse((o) => {
+      if (!o.isMesh || !o.visible) return;
+      const bb = new THREE.Box3().setFromObject(o);
+      const v = bb.getSize(new THREE.Vector3());
+      const vol = v.x * v.y * v.z;
+      if (vol > best) { best = vol; roof = bb.max.y; }
+    });
+    return { root: wrap, dims: size, mats, roof: Math.min(roof || size.y, size.y) };
   }, [scene, spec]);
 
   // live recolour
@@ -63,14 +92,14 @@ export default function RealCar({ model, paint, rim, roof = "black", acc = {}, l
 
   const L = dims.x, W = dims.z, H = dims.y;
   const d = {
-    front: L / 2, w: W * 0.92, roofTop: H - 0.04, roofX: -L * 0.08, roofLen: L * 0.46,
+    front: L / 2, w: W * 0.92, roofTop: roofY + 0.02 + (spec.roofAdj || 0), roofX: -L * 0.08, roofLen: L * 0.46,
     bodyY: H * 0.42, bodyH: H * 0.34, top: H * 0.58, snorkelX: L * 0.12, wheelX: [L * 0.32, -L * 0.32],
   };
   // the real body already has bumpers and steps; only add the kit pieces it lacks
   return (
     <group>
       <primitive object={root} />
-      <Accessories acc={{ ...acc, steps: false }} lights={lights} d={d} />
+      <Accessories acc={{ ...acc, steps: spec.steps ? false : acc.steps }} lights={lights} d={d} />
       {lights && <pointLight position={[L / 2 + 1.4, H * 0.45, 0]} intensity={18} distance={7} color="#e9f1ff" />}
     </group>
   );

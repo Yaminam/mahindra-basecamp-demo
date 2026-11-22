@@ -435,7 +435,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto flex max-w-[1600px] flex-col gap-3 border-t border-white/10 px-6 py-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between sm:px-12">
-        <p>Concept demo prepared for Mahindra &amp; Mahindra. Products, prices, dealers and dates are illustrative. Photography under the Unsplash and Pexels licences. 3D models: "Mahindra - Thar Roxx" by ansari_studios and "THAR 4X4" by MB_Mahesh, CC BY 4.0.</p>
+        <p>Concept demo prepared for Mahindra &amp; Mahindra. Products, prices, dealers and dates are illustrative. Photography under the Unsplash and Pexels licences. 3D models (CC BY 4.0): "Mahindra - Thar Roxx" by ansari_studios, "THAR 4X4" by MB_Mahesh, "2022 Mahindra Scorpio-N" by BHP3D, "XUV 3XO" by ShreyanshChaurasia_13.</p>
         <p>Made in India</p>
       </div>
     </footer>

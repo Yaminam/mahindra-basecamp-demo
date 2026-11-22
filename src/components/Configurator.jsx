@@ -16,8 +16,7 @@ const matchModel = (v) => {
   if (id === "roxx") return BUILD_MODELS[0];
   if (id === "thar") return BUILD_MODELS[1];
   if (id.startsWith("scorpio")) return BUILD_MODELS[2];
-  if (id.startsWith("xuv") || id === "boleroneo") return BUILD_MODELS[3];
-  return BUILD_MODELS[4];
+  return BUILD_MODELS[3];
 };
 
 export default function Configurator({ full = false }) {
@@ -69,7 +68,7 @@ export default function Configurator({ full = false }) {
           <p className="text-sm opacity-55">{model.name}, in</p>
           <AnimatePresence mode="wait">
             <motion.h3 key={paint.id + model.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: 0.5, ease: EASE }} className="display mt-1 text-4xl sm:text-6xl">
-              {paint.name}
+              {model.factoryPaint ? "Factory colour" : paint.name}
             </motion.h3>
           </AnimatePresence>
           <p className="mt-3 text-sm opacity-55">Drag to rotate. Every part is a genuine accessory.</p>
@@ -89,12 +88,16 @@ export default function Configurator({ full = false }) {
         data-lenis-prevent
         className="no-scrollbar relative m-3 overflow-y-auto rounded-[28px] border border-white/10 bg-[#141518]/90 p-6 text-white backdrop-blur-2xl lg:absolute lg:right-8 lg:top-8 lg:m-0 lg:max-h-[calc(100%-4rem)] lg:w-[370px]">
         <p className="text-xs uppercase tracking-[0.2em] text-white/45">Paint</p>
+        {model.factoryPaint ? (
+          <p className="mt-3 rounded-2xl bg-white/[0.05] px-4 py-3 text-sm text-white/70">Shown in its factory colour. More paints coming soon.</p>
+        ) : (
         <div className="mt-3 flex gap-2.5">
           {PAINTS.map((p) => (
             <button key={p.id} onClick={() => setPaint(p)} aria-label={p.name} title={p.name}
               className={`press h-9 w-9 rounded-full ring-offset-2 ring-offset-[#141518] transition ${paint.id === p.id ? "ring-2 ring-white" : "ring-1 ring-white/15"}`} style={{ background: `radial-gradient(circle at 35% 30%, #ffffff55, ${p.hex} 60%)` }} />
           ))}
         </div>
+        )}
         <div className="mt-6 grid grid-cols-2 gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-white/45">Wheels</p>

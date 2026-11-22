@@ -237,9 +237,8 @@ export const BUILD_ACC = [
 export const BUILD_MODELS = [
   { id: "roxx", fit: "roxx", name: "Thar Roxx", real: true, acc: ["rack", "lightbar", "bumper", "snorkel"], start: { rack: true, lightbar: true } },
   { id: "thar", fit: "thar", name: "Thar", real: true, acc: ["rack", "lightbar", "bumper", "snorkel", "ladder"], start: { lightbar: true } },
-  { id: "scorpio", fit: "scorpion", name: "Scorpio-N", acc: ["rack", "lightbar", "bumper", "snorkel", "steps"], start: { steps: true, lightbar: true } },
-  { id: "xuv", fit: "xuv700", name: "XUV700", acc: ["roofbox", "steps"], start: { roofbox: true } },
-  { id: "ev", fit: "be6", name: "BE 6", acc: ["roofbox"], start: {} },
+  { id: "scorpio", fit: "scorpion", name: "Scorpio-N", real: true, acc: ["rack", "lightbar", "bumper", "snorkel"], start: { rack: true } },
+  { id: "xuv", fit: "xuv3xo", name: "XUV 3XO", real: true, factoryPaint: true, acc: ["roofbox", "steps"], start: { roofbox: true } },
 ];
 
 // Backup shot for any photo that fails to load (keeps tiles from going blank)

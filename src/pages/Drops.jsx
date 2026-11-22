@@ -8,7 +8,7 @@ import { Tilt } from "../components/fx";
 import { MaskLines, RevealImage } from "../components/premium";
 
 const UPCOMING = [
-  { name: "Formula E Race-Weekend Capsule", when: "January 2027", image: "racing.jpg", note: "Released on race weekend, gone by Monday." },
+  { name: "Formula E Race-Weekend Capsule", when: "January 2027", image: "merch/softshell.jpg", note: "Released on race weekend, gone by Monday." },
   { name: "Great Escape Patch Series", when: "Earned, not sold", image: "trail-ladakh.jpg", note: "Unlocked by finishing a trail." },
   { name: "Born Electric Reflective Line", when: "February 2027", image: "ev.jpg", note: "Night-drive apparel for EV owners." },
 ];

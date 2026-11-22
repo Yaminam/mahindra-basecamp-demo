@@ -14,7 +14,6 @@ const INTRO = [
   ["range/xuv700.jpg", "XUV700"],
   ["range/xev9e.jpg", "XEV 9e"],
   ["range/bolero.jpg", "Bolero"],
-  ["racing.jpg", "Mahindra Racing"],
   ["range/roxx.jpg", "Thar Roxx"],
   ["range/tractor.jpg", "Tractors"],
 ];

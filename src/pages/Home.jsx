@@ -183,22 +183,22 @@ function Story() {
 }
 
 function MerchSpread() {
-  const polo = productById("team-polo");
-  const cap = productById("team-cap");
+  const polo = productById("trail-hoodie");
+  const cap = productById("basecamp-cap");
   return (
     <section className="mx-auto mt-40 max-w-[1600px] px-5 sm:px-8">
       <div className="grid gap-5 lg:grid-cols-12">
         <Link to="/merch" className="group relative lg:col-span-7">
-          <RevealImage src="racing.jpg" alt="Mahindra Racing" className="aspect-[4/5] rounded-[32px] lg:aspect-auto lg:h-full lg:min-h-[760px]" imgClass="transition-transform duration-1000 group-hover:scale-105" />
+          <RevealImage src="range/roxx.jpg" alt="Thar Roxx in Sonamarg" className="aspect-[4/5] rounded-[32px] lg:aspect-auto lg:h-full lg:min-h-[760px]" imgClass="transition-transform duration-1000 group-hover:scale-105" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-[32px] bg-gradient-to-t from-black/75 to-transparent p-8 text-white sm:p-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-white/75">Mahindra Racing</p>
-            <p className="display mt-2 text-5xl sm:text-7xl">2026 Team Collection</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-white/75">Thar Trail</p>
+            <p className="display mt-2 text-5xl sm:text-7xl">Built for the cold desert.</p>
           </div>
         </Link>
         <div className="flex flex-col gap-5 lg:col-span-5">
           <Reveal className="rounded-[32px] bg-white p-8 sm:p-10">
-            <h2 className="display text-5xl sm:text-6xl">Wear the team.</h2>
-            <p className="mt-4 max-w-sm text-lg text-mute">Garage-issue teamwear, priced in rupees. Add your name and number like the drivers do.</p>
+            <h2 className="display text-5xl sm:text-6xl">Dressed for the trail.</h2>
+            <p className="mt-4 max-w-sm text-lg text-mute">Heavyweight fleece, merino and trail caps, made for Spiti mornings and long drives home.</p>
             <Btn as={Link} to="/merch" className="mt-8 py-4">Shop the collection <ArrowRight size={16} weight="bold" /></Btn>
           </Reveal>
           <div className="grid flex-1 grid-cols-2 gap-5">

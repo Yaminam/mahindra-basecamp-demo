@@ -12,7 +12,7 @@ const EASE = [0.16, 1, 0.3, 1];
 export const MODE_LABEL = { ship: "Ship home (DIY)", dealer: "Fit at dealer", doorstep: "Doorstep fitment" };
 
 const LINKS = [
-  ["/merch", "Merch", "racing.jpg"],
+  ["/merch", "Merch", "jacket.jpg"],
   ["/build", "Build in 3D", "thar-red.jpg"],
   ["/shop", "Accessories", "hero-thar.jpg"],
   ["/worlds", "Worlds", "scorpio-spiti.jpg"],

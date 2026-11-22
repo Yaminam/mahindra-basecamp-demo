@@ -72,7 +72,7 @@ function Product() {
   const dealerObj = DEALERS.find((d) => d.id === dealer);
   const collection = COLLECTIONS.find((c) => c.id === p.collection);
   const world = WORLDS.find((w) => w.id === p.world);
-  const gallery = [...new Set([p.image, p.image2, collection?.image, world?.image].filter(Boolean))].slice(0, 4);
+  const gallery = [...new Set([p.image, p.image2].filter(Boolean))];
   const fitModels = p.fit ? MODELS.filter((x) => p.fit.includes(x.id)) : [];
   const in3d = BUILD_ACC.some((a) => a.product === p.id);
   const related = ALL_PRODUCTS.filter((x) => x.id !== p.id && ((p.collection && x.collection === p.collection) || (!p.collection && (x.world === p.world || x.cat === p.cat) && (!vehicle || fits(x, vehicle))))).slice(0, 8);

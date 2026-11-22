@@ -5,7 +5,7 @@ import { MERCH } from "../data";
 import { MaskLines, RevealImage } from "./premium";
 
 const TILES = [
-  { cat: "Teamwear", image: "racing.jpg", span: "lg:col-span-2 lg:row-span-2", big: true },
+  { cat: "Teamwear", image: "merch/polo-black.jpg", span: "lg:col-span-2 lg:row-span-2", big: true },
   { cat: "Apparel", image: "hoodie.jpg", span: "lg:row-span-2" },
   { cat: "Headwear", image: "cap.jpg", span: "" },
   { cat: "Collectibles", image: "diecast.jpg", span: "" },

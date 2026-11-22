@@ -18,7 +18,6 @@ export const REEL = [
   { src: "reel/scorpio.mp4", label: "Scorpio-N" },
   { still: "hoodie.jpg", label: "Trail Hoodie", to: "/p/trail-hoodie", pos: "50% 35%" },
   { src: "reel/xev9e.mp4", label: "XEV 9e, Born Electric" },
-  { src: "reel/racing.mp4", label: "Mahindra Racing" },
   { still: "merch/polo-black.jpg", label: "Team Polo", to: "/p/team-polo", pos: "50% 50%" },
   { src: "reel/roxx.mp4", label: "Thar Roxx, Sonamarg" },
   { still: "cap.jpg", label: "Team Trucker Cap", to: "/p/team-cap", pos: "50% 25%" },
